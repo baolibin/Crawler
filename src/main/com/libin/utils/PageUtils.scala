@@ -1,6 +1,7 @@
 package libin.utils
 
-import java.io.IOException
+import java.io.{InputStreamReader, BufferedReader, InputStream, IOException}
+import java.net.{HttpURLConnection, URL}
 
 import org.apache.http.HttpEntity
 import org.apache.http.client.ClientProtocolException
@@ -33,5 +34,22 @@ object PageUtils {
       case e: IOException => content = "IOException"
     }
     content
+  }
+
+  /**
+    * 使用HttpURLConnection进行下载页面
+    */
+  def httpUrlSpider(url: String): String = {
+    val sb = new StringBuilder
+    val u = new URL(url)
+    val conn = u.openConnection().asInstanceOf[HttpURLConnection]
+    val stream: InputStream = conn.getInputStream
+    val bufferedReader: BufferedReader = new BufferedReader(new InputStreamReader(stream, "utf-8"))
+    var line = bufferedReader.readLine
+    while (line != null) {
+      sb.append(line)
+      line = bufferedReader.readLine
+    }
+    sb.toString
   }
 }

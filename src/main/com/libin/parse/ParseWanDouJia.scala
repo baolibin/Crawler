@@ -1,6 +1,7 @@
 package libin.parse
 
 import libin.utils.HtmlUtils
+import org.apache.commons.lang3.StringUtils
 import org.htmlcleaner.{TagNode, HtmlCleaner}
 
 /**
@@ -18,6 +19,8 @@ object ParseWanDouJia {
     println("一级标题:" + level1CategoryName.trim)
     val level2CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[1]/div[2]/a/span")
     println("二级标题:" + level2CategoryName.trim)
+    val level3CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[2]/div[2]/div[1]/dl/dd[2]/a[2]")
+    println("三级标题:" + level3CategoryName.trim)
     val appName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[2]/p[1]/span")
     println("App名字:" + appName.trim)
     val downloads = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[4]/span[1]/i")
@@ -40,6 +43,8 @@ object ParseWanDouJia {
     println("兼容性:" + compatibility.trim.split("\n")(0))
     val publisherName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[2]/div[2]/div[1]/dl/dd[7]/span")
     println("开发商|作者:" + publisherName.trim)
+    val tags = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[2]/div[2]/div[1]/dl/dd[3]/div")
+    println("标签:" + tags.trim.split("\n").filter(line=>StringUtils.isNoneBlank(line)).map(line=>line.trim).mkString("|"))
     sb.toString()
   }
 }

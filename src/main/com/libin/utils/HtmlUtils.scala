@@ -1,5 +1,8 @@
 package libin.utils
 
+import java.io.{InputStreamReader, BufferedReader, InputStream}
+import java.net.{HttpURLConnection, URL, InetSocketAddress}
+
 import org.htmlcleaner.{XPatherException, TagNode}
 
 /**
@@ -20,4 +23,5 @@ object HtmlUtils {
     }
     result
   }
+
 }
