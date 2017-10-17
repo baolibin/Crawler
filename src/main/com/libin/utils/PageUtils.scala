@@ -30,8 +30,7 @@ object PageUtils {
       val entity: HttpEntity = response.getEntity
       content = EntityUtils.toString(entity)
     } catch {
-      case e: ClientProtocolException => content = "ClientProtocolException"
-      case e: IOException => content = "IOException"
+      case _=> content = null
     }
     content
   }
