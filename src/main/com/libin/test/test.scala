@@ -47,11 +47,11 @@ object test {
     var updateInfo = ""
     var updateContent = ""
     try {
-      val strContent: String = PageUtils.httpUrlSpider("http://www.wandoujia.com/apps/com.tencent.tmgp.xianyuanz")
+      val strContent: String = PageUtils.httpUrlSpider("http://www.wandoujia.com/apps/com.folk.ringtone")
       println(strContent)
       if (StringUtils.isNotBlank(strContent)) {
         val pat1 = "([\\s\\S]*)itemprop=\"description\">([\\s\\S]*)</div>([\\r\\n\\s]*)<a style=\"display([\\s\\S]*)"
-        val pat2 = "([\\s\\S]*)class=\"con\">([\\s\\S]*)</div>([\\s\\S]*)"
+        val pat2 = "([\\s\\S]*)<div data-originheight=\"100\" class=\"con\">([\\s\\S]*)</div>([\\s\\S]*)"
         val compile1 = Pattern.compile(pat1)
         val matcher1 = compile1.matcher(strContent)
         if (matcher1.find) {
@@ -59,11 +59,13 @@ object test {
           println("应用信息："+ updateInfo)
         }else System.out.println("应用信息未匹配到!")
 
-        val compile2 = Pattern.compile(pat2)
-        val matcher2 = compile2.matcher(strContent)
-        if (matcher2.find) {
-          updateInfo = matcher2.group(2).trim.split("</div> ")(0).replaceAll("</br>", "").replaceAll("<br>", "")
-          println("更新内容："+ updateInfo)
+        if(strContent.contains("<div data-originheight=\"100\" class=\"con\">")){
+          val compile2 = Pattern.compile(pat2)
+          val matcher2 = compile2.matcher(strContent)
+          if (matcher2.find) {
+            updateContent = matcher2.group(2).trim.split("</div> ")(0).replaceAll("</br>", "").replaceAll("<br>", "")
+            println("更新内容："+ updateContent)
+          }else System.out.println("更新内容未匹配到!")
         }else System.out.println("更新内容未匹配到!")
       }
       else System.out.println("HttpURLConnection下载页面为空!")

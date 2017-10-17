@@ -19,7 +19,7 @@ import scala.collection.mutable
   */
 object WanDouJia {
 
-  val softwareGame = false //true表示抓取软件内容,false表示抓取游戏内容
+  val softwareGame = true //true表示抓取软件内容,false表示抓取游戏内容
 
   //开始下载的初始地址
   val initPathSoftware = "http://www.wandoujia.com/category/app"
@@ -51,7 +51,8 @@ object WanDouJia {
       println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
       //拼接输出目录
       val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
-      val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia/date=" + dateTime
+      //val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia/date=" + dateTime
+      val outRootPath = "E://_github_2017/crawlerData/WanDouJia/date=" + dateTime
 
       if (softwareGame) {
         val file = new File(outRootPath + "/software/")
