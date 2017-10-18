@@ -25,6 +25,11 @@ object WanDouJia {
   val initPathSoftware = "http://www.wandoujia.com/category/app"
   val initPathGame = "http://www.wandoujia.com/category/game"
   val classificationMap = new mutable.HashMap[String, String]() //目录类别
+  val li = List("buYu", "dongMan", "duoBi", "feiXing", "geDou", "hengBan", "jieJi", "jingJiCeLue", "jingYing", "kaPai",
+    "kongZhan", "liShi", "maJiang", "moTuo", "paoKu", "qiangZhan", "qiTaQiuLei", "riHanXi", "rpg", "sanGuo",
+    "sheJi", "tanKe", "tiaoYue", "wuXia", "xiuGaiQi", "xiuXian", "yinYue", "youXiZhuShou", "yueDong", "zhiPai",
+    "zuJi",
+    "yangCheng","taFang","moNiQi","nanSheng","maoXian","lanQiu","qiLei")
 
   def main(args: Array[String]) {
     initWanDouJiaCategory()
@@ -35,7 +40,7 @@ object WanDouJia {
       */
     val wanDouJiaPageLevel3: String = if (softwareGame) DownloadInfo.downloadWanDouJia(initPathSoftware) else DownloadInfo.downloadWanDouJia(initPathGame)
     //获取软件或游戏应用的App
-    val setLevel3: mutable.HashMap[String, String] =if (softwareGame) ParseWanDouJia.parseWanDouJiaSoftware(wanDouJiaPageLevel3) else ParseWanDouJia.parseWanDouJiaGame(wanDouJiaPageLevel3)
+    val setLevel3: mutable.HashMap[String, String] = if (softwareGame) ParseWanDouJia.parseWanDouJiaSoftware(wanDouJiaPageLevel3) else ParseWanDouJia.parseWanDouJiaGame(wanDouJiaPageLevel3)
     println("应用三级url一共:" + setLevel3.size)
     println(setLevel3.mkString("\n"))
 
@@ -48,84 +53,88 @@ object WanDouJia {
     var count = 0
     for ((nameLenel3, url3) <- setLevel3) {
       count += 1
-      println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
-      //拼接输出目录
-      val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
-      val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia/date=" + dateTime
-      //val outRootPath = "E://_github_2017/crawlerData/WanDouJia/date=" + dateTime
+      if (li.contains(classificationMap(nameLenel3))) {
+        println("\n分类已经爬取过了:".+(classificationMap(nameLenel3).trim))
+      } else {
+        println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
+        //拼接输出目录
+        val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
+        val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia1/date=" + dateTime
+        //val outRootPath = "E://_github_2017/crawlerData/WanDouJia/date=" + dateTime
 
-      if (softwareGame) {
-        val file = new File(outRootPath + "/software/")
-        if (!file.exists()) {
-          file.mkdirs()
+        if (softwareGame) {
+          val file = new File(outRootPath + "/software/")
+          if (!file.exists()) {
+            file.mkdirs()
+          }
+        } else {
+          val file = new File(outRootPath + "/game/")
+          if (!file.exists()) {
+            file.mkdirs()
+          }
         }
-      } else {
-        val file = new File(outRootPath + "/game/")
-        if (!file.exists()) {
-          file.mkdirs()
-        }
-      }
 
-      val writer = if (softwareGame) {
-        StoreUtils.getWriter(outRootPath + "/software/" + fileName + ".txt")
-      } else {
-        StoreUtils.getWriter(outRootPath + "/game/" + fileName + ".txt")
-      }
-      val writerFailed = if (softwareGame) {
-        StoreUtils.getWriter(outRootPath + "/software/" + fileName + "_error.txt")
-      } else {
-        StoreUtils.getWriter(outRootPath + "/game/" + fileName + "_error.txt")
-      }
-      //获取三级页面的内容
-      val wanDouJiaAppUrl: String = DownloadInfo.downloadWanDouJia(url3)
-      if (StringUtils.isNoneBlank(wanDouJiaAppUrl)) {
-        //解析出三级页面的页数,并解析每个页面的所有App内容  urlMap为返回所有分页的URL
-        val urlMap = ParseWanDouJia.AppPaginationURL(wanDouJiaAppUrl, url3)
-        println(urlMap.mkString("\n"))
-        var countJ = 0
-        //对每个分页里面的App数据进行爬取
-        if (urlMap.nonEmpty) {
-          for ((nameLenel4, url4) <- urlMap) {
-            countJ += 1
-            println("\n===== 开始下载三级分类App里的" + nameLenel4 + ", url=" + url4 + " ========= 正在爬第:" + countJ + "个, ==== 一共" + urlMap.size + "个============================")
-            /**
-              * 解析豌豆荚页面
-              */
-            //对每一个页面的内容进行抓取
-            val wanDouJiaPageContent: String = DownloadInfo.downloadWanDouJia(url4)
-            if (StringUtils.isNoneBlank(wanDouJiaPageContent)) {
-              //解析豌豆荚页面
-              val WanDouJiaPageParse = ParseWanDouJia.parseWanDouJia(wanDouJiaPageContent, url4,softwareGame)
-              if (StringUtils.isNoneBlank(WanDouJiaPageParse) && WanDouJiaPageParse != "error") {
-                //println(WanDouJiaPageParse)
-                //写入App爬取的内容
-                writer.println(WanDouJiaPageParse)
+        val writer = if (softwareGame) {
+          StoreUtils.getWriter(outRootPath + "/software/" + fileName + ".txt")
+        } else {
+          StoreUtils.getWriter(outRootPath + "/game/" + fileName + ".txt")
+        }
+        val writerFailed = if (softwareGame) {
+          StoreUtils.getWriter(outRootPath + "/software/" + fileName + "_error.txt")
+        } else {
+          StoreUtils.getWriter(outRootPath + "/game/" + fileName + "_error.txt")
+        }
+        //获取三级页面的内容
+        val wanDouJiaAppUrl: String = DownloadInfo.downloadWanDouJia(url3)
+        if (StringUtils.isNoneBlank(wanDouJiaAppUrl)) {
+          //解析出三级页面的页数,并解析每个页面的所有App内容  urlMap为返回所有分页的URL
+          val urlMap = ParseWanDouJia.AppPaginationURL(wanDouJiaAppUrl, url3)
+          println(urlMap.mkString("\n"))
+          var countJ = 0
+          //对每个分页里面的App数据进行爬取
+          if (urlMap.nonEmpty) {
+            for ((nameLenel4, url4) <- urlMap) {
+              countJ += 1
+              println("\n===== 开始下载三级分类App里的" + nameLenel4 + ", url=" + url4 + " ========= 正在爬第:" + countJ + "个, ==== 一共" + urlMap.size + "个============================")
+              /**
+                * 解析豌豆荚页面
+                */
+              //对每一个页面的内容进行抓取
+              val wanDouJiaPageContent: String = DownloadInfo.downloadWanDouJia(url4)
+              if (StringUtils.isNoneBlank(wanDouJiaPageContent)) {
+                //解析豌豆荚页面
+                val WanDouJiaPageParse = ParseWanDouJia.parseWanDouJia(wanDouJiaPageContent, url4, softwareGame)
+                if (StringUtils.isNoneBlank(WanDouJiaPageParse) && WanDouJiaPageParse != "error") {
+                  //println(WanDouJiaPageParse)
+                  //写入App爬取的内容
+                  writer.println(WanDouJiaPageParse)
+                } else {
+                  println("具体App页面内容下载失败:" + url4)
+                  writerFailed.println("具体App页面内容下载失败:" + url4)
+                }
               } else {
                 println("具体App页面内容下载失败:" + url4)
                 writerFailed.println("具体App页面内容下载失败:" + url4)
               }
-            } else {
-              println("具体App页面内容下载失败:" + url4)
-              writerFailed.println("具体App页面内容下载失败:" + url4)
+              println("===== 已爬完三级分类App里的" + nameLenel4 + ", url=" + url4 + " ========= 已爬完第:" + countJ + "个, ==== 一共" + urlMap.size + "个============================\n")
+              //每解析一个App页面内容停顿2秒
+              Thread.sleep(2000)
             }
-            println("===== 已爬完三级分类App里的" + nameLenel4 + ", url=" + url4 + " ========= 已爬完第:" + countJ + "个, ==== 一共" + urlMap.size + "个============================\n")
-            //每解析一个App页面内容停顿2秒
-            Thread.sleep(2000)
+          } else {
+            println("该三级页面的分页个数为空：" + url3)
+            writerFailed.println("该三级页面的分页个数为空：" + url3)
           }
         } else {
-          println("该三级页面的分页个数为空：" + url3)
-          writerFailed.println("该三级页面的分页个数为空：" + url3)
+          println("获取该三级页面内容为空：" + url3)
+          writerFailed.println("获取该三级页面内容为空：" + url3)
         }
-      } else {
-        println("获取该三级页面内容为空：" + url3)
-        writerFailed.println("获取该三级页面内容为空：" + url3)
+        //关闭流
+        StoreUtils.closeWriter(writer)
+        StoreUtils.closeWriter(writerFailed)
+        println("================ 已爬完三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================\n")
+        //下载每一个三级分类停顿的时间
+        Thread.sleep(5000)
       }
-      //关闭流
-      StoreUtils.closeWriter(writer)
-      StoreUtils.closeWriter(writerFailed)
-      println("================ 已爬完三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================\n")
-      //下载每一个三级分类停顿的时间
-      Thread.sleep(5000)
     }
   }
 
