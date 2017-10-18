@@ -34,7 +34,8 @@ object ParseWanDouJia {
       println("一级标题:" + level1CategoryName)
       val level2CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[1]/div[2]/a/span").trim
       println("二级标题:" + level2CategoryName)
-      val level3CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[2]/div[2]/div[1]/dl/dd[2]/a[2]").trim
+      val level3CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[2]/div[2]/div[1]/dl/dd[2]")
+        .trim.split("\n").filter(line => StringUtils.isNoneBlank(line)).map(line => line.trim).mkString("|")
       println("三级标题:" + level3CategoryName)
       val appName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[2]/p[1]/span").trim
       println("App名字:" + appName)
