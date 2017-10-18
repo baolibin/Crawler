@@ -2,6 +2,8 @@ package libin.utils
 
 import org.apache.commons.lang3.StringUtils
 import org.htmlcleaner.{TagNode, XPatherException}
+import org.openqa.selenium.JavascriptExecutor
+import org.openqa.selenium.chrome.ChromeDriver
 
 import scala.collection.mutable
 
@@ -25,11 +27,18 @@ object HtmlUtils {
         result = tagNode.getText.toString
       }
     } catch {
-      case _ => result = null
+      case _: Throwable => result = null
     }
     result
   }
 
+  /**
+    * 用Js滑道窗口底部
+    */
+  def scrollHeightUrl(webDriver: ChromeDriver): Unit = {
+    webDriver.asInstanceOf[JavascriptExecutor].executeScript("window.scrollTo(0, document.body.scrollHeight)")
+    Thread.sleep(4000)
+  }
 
   /**
     * 匹配数据工场的一条数据

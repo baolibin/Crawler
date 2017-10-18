@@ -4,7 +4,7 @@ import java.io.File
 
 import libin.download.DownloadInfo
 import libin.parse.ParseWanDouJia
-import libin.utils.StoreUtils
+import libin.store.StoreUtils
 import org.apache.commons.lang3.StringUtils
 import org.joda.time.DateTime
 
@@ -19,7 +19,7 @@ import scala.collection.mutable
   */
 object WanDouJia {
 
-  val softwareGame = true //true表示抓取软件内容,false表示抓取游戏内容
+  val softwareGame = false //true表示抓取软件内容,false表示抓取游戏内容
 
   //开始下载的初始地址
   val initPathSoftware = "http://www.wandoujia.com/category/app"
@@ -34,9 +34,9 @@ object WanDouJia {
       * 下载豌豆荚三级分类的软件和游戏的URL地址
       */
     val wanDouJiaPageLevel3: String = if (softwareGame) DownloadInfo.downloadWanDouJia(initPathSoftware) else DownloadInfo.downloadWanDouJia(initPathGame)
-    //获取软件应用的App
-    val setLevel3: mutable.HashMap[String, String] = ParseWanDouJia.parseWanDouJiaSoftware(wanDouJiaPageLevel3)
-    println("软件应用三级url一共:" + setLevel3.size)
+    //获取软件或游戏应用的App
+    val setLevel3: mutable.HashMap[String, String] =if (softwareGame) ParseWanDouJia.parseWanDouJiaSoftware(wanDouJiaPageLevel3) else ParseWanDouJia.parseWanDouJiaGame(wanDouJiaPageLevel3)
+    println("应用三级url一共:" + setLevel3.size)
     println(setLevel3.mkString("\n"))
 
     /**
@@ -51,8 +51,8 @@ object WanDouJia {
       println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
       //拼接输出目录
       val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
-      //val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia/date=" + dateTime
-      val outRootPath = "E://_github_2017/crawlerData/WanDouJia/date=" + dateTime
+      val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia/date=" + dateTime
+      //val outRootPath = "E://_github_2017/crawlerData/WanDouJia/date=" + dateTime
 
       if (softwareGame) {
         val file = new File(outRootPath + "/software/")
@@ -95,7 +95,7 @@ object WanDouJia {
             val wanDouJiaPageContent: String = DownloadInfo.downloadWanDouJia(url4)
             if (StringUtils.isNoneBlank(wanDouJiaPageContent)) {
               //解析豌豆荚页面
-              val WanDouJiaPageParse = ParseWanDouJia.parseWanDouJia(wanDouJiaPageContent, url4)
+              val WanDouJiaPageParse = ParseWanDouJia.parseWanDouJia(wanDouJiaPageContent, url4,softwareGame)
               if (StringUtils.isNoneBlank(WanDouJiaPageParse) && WanDouJiaPageParse != "error") {
                 //println(WanDouJiaPageParse)
                 //写入App爬取的内容

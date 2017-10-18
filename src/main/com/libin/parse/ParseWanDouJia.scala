@@ -13,6 +13,7 @@ import scala.collection.mutable
 
 /**
   * Created by baolibin on 2017/10/15.
+  * 对每一个网站页面的解析
   */
 object ParseWanDouJia {
   val PADDING = ""
@@ -21,13 +22,15 @@ object ParseWanDouJia {
     * 下载豌豆荚的第三步
     * 解析一个豌豆荚页面
     * 输入的URL地址示例：http://www.wandoujia.com/apps/com.qiyi.video
+    * 返回一个App的爬取信息
     */
-  def parseWanDouJia(content: String, urlPath: String): String = {
+  def parseWanDouJia(content: String, urlPath: String,softwareGame:Boolean): String = {
     try {
       println("====================================== 开始解析页面" + urlPath + "========================================================")
       val htmlCleaner: HtmlCleaner = new HtmlCleaner
       val rootNode: TagNode = htmlCleaner.clean(content)
-      val level1CategoryName = HtmlUtils.getText(rootNode, "//*[@id=\"j-head-menu\"]/ul/li[2]/a/span").trim
+      val level1CategoryName =if(softwareGame) HtmlUtils.getText(rootNode, "//*[@id=\"j-head-menu\"]/ul/li[2]/a/span").trim
+      else HtmlUtils.getText(rootNode, "//*[@id=\"j-head-menu\"]/ul/li[3]/a/span").trim
       println("一级标题:" + level1CategoryName)
       val level2CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[1]/div[2]/a/span").trim
       println("二级标题:" + level2CategoryName)
@@ -37,7 +40,8 @@ object ParseWanDouJia {
       println("App名字:" + appName)
       val downloads = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[4]/span[1]/i").trim
       println("下载量:" + downloads)
-      val favorableRate = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[4]/span[2]/i").trim
+      //没有采集到会显示暂无,把暂无替换成""
+      val favorableRate = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[4]/span[2]/i").trim.replaceAll("暂无", "")
       println("好评率:" + favorableRate)
       val commentNumber = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[1]/div[4]/div[1]/a/i").trim
       println("评论数:" + commentNumber)
@@ -107,23 +111,25 @@ object ParseWanDouJia {
       println("数据来自:" + appSource)
       val format = "apk"
       println("格式:" + format)
+      //合并App点评
+      val comments = if ((comment1 + ";" + comment2).trim == ";") PADDING else comment1 + ";" + comment2
 
       println("====================================== 页面解析完毕" + urlPath + "========================================================")
       val matchPageContent1 = HtmlUtils.appInfoCrawler1(appName, PADDING, PADDING, downloads, size, versionName, updateTime, publisherName,
-        comment1 + ";" + comment2, tags, level1CategoryName, level2CategoryName, level3CategoryName, PADDING, PADDING)
+        comments, tags, level1CategoryName, level2CategoryName, level3CategoryName, PADDING, PADDING)
       val matchPageContent2 = HtmlUtils.appInfoCrawler2(system, compatibility, PADDING, PADDING, PADDING, url, introduction, changeLog,
         PADDING, PADDING, relatedDownloads, -1, PADDING, commentNumber.toLong, 2, favorableRate, PADDING, PADDING, format)
       HtmlUtils.toAppString1(matchPageContent1) + HtmlUtils.toAppString2(matchPageContent2)
     } catch {
-      case e: IOException => "error"
-      case _ => "error"
+      case _: Throwable => "error"
     }
   }
 
   /**
     * 下载豌豆荚的第一步
-    * 解析安卓软件所有三级分类的URL
+    * 解析安卓软件所有三级分类的URL -> 软件
     * 初始URL地址：http://www.wandoujia.com/category/app
+    * 返回所有三级分类的名字以及url
     */
   def parseWanDouJiaSoftware(content: String): mutable.HashMap[String, String] = {
     val filterList = List("影音播放", "系统工具", "通讯社交", "手机美化", "新闻阅读", "摄影图像", "考试学习", "网上购物",
@@ -152,8 +158,9 @@ object ParseWanDouJia {
 
   /**
     * 下载豌豆荚的第一步
-    * 解析所有三级分类的URL
+    * 解析游戏所有三级分类的URL -> 游戏
     * 初始URL地址：http://www.wandoujia.com/category/game
+    * 返回所有三级分类的名字以及url
     */
   def parseWanDouJiaGame(content: String): mutable.HashMap[String, String] = {
     val filterList = List("休闲益智", "跑酷竞速", "扑克棋牌", "动作冒险", "飞行射击", "经营策略", "网络游戏", "体育竞技",
@@ -184,6 +191,7 @@ object ParseWanDouJia {
     * 下载豌豆荚的第二步
     * 解析分页显示的每个App的具体地址
     * 输入的URL地址示例：http://www.wandoujia.com/category/5029_716/1
+    * 返回所有分页App的名字以及url
     */
   def AppPaginationURL(content: String, url: String): mutable.HashMap[String, String] = {
     val rootPath = url
@@ -226,5 +234,4 @@ object ParseWanDouJia {
   }
 
 }
-
 

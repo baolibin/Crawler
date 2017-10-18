@@ -30,7 +30,7 @@ object PageUtils {
       val entity: HttpEntity = response.getEntity
       content = EntityUtils.toString(entity)
     } catch {
-      case _=> content = null
+      case _: Throwable => content = null
     }
     content
   }

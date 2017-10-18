@@ -7,7 +7,7 @@ import libin.utils.PageUtils
   */
 object DownloadInfo {
   /**
-    * 下载豌豆荚的页面
+    * 下载豌豆荚,应用宝等页面
     */
   def downloadWanDouJia(url: String): String = {
     val page = PageUtils.getHttpClientContent(url)

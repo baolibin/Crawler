@@ -4,6 +4,7 @@ import java.io.IOException
 import java.util.regex.Pattern
 
 import libin.download.DownloadInfo
+import libin.startCrawl.WanDouJia.initPathGame
 import libin.utils.{HtmlUtils, PageUtils}
 import org.apache.commons.lang3.StringUtils
 import org.htmlcleaner.{HtmlCleaner, TagNode}
@@ -44,7 +45,7 @@ object test {
     println(pageNumber)*/
 
 
-    var updateInfo = ""
+    /*var updateInfo = ""
     var updateContent = ""
     try {
       val strContent: String = PageUtils.httpUrlSpider("http://www.wandoujia.com/apps/com.folk.ringtone")
@@ -74,9 +75,11 @@ object test {
         println("下载应用信息和更新内容时Connection reset!")
         updateInfo = "Connection reset"
         updateContent = "Connection reset"
-    }
+    }*/
 
 
+    val map = parseWanDouJiaGame(DownloadInfo.downloadWanDouJia(initPathGame))
+    println(map)
 
     //parseWanDouJiaSoftware(PageUtils.getHttpClientContent("http://www.wandoujia.com/category/app"))
     //parseWanDouJiaSoftware(PageUtils.getHttpClientContent("http://www.wandoujia.com/category/game"))
