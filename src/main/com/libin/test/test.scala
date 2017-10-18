@@ -77,9 +77,13 @@ object test {
         updateContent = "Connection reset"
     }*/
 
+    val htmlCleaner: HtmlCleaner = new HtmlCleaner
+    val rootNode: TagNode = htmlCleaner.clean(DownloadInfo.downloadWanDouJia("http://www.wandoujia.com/apps/com.mobileapploader.aid217144"))
+    val level3CategoryName = HtmlUtils.getText(rootNode, "//div[@class=\"container\"]/div[2]/div[2]/div[2]/div[1]/dl/dd[2]/a[2]").trim
+    println("三级标题:" + level3CategoryName)
 
-    val map = parseWanDouJiaGame(DownloadInfo.downloadWanDouJia(initPathGame))
-    println(map)
+    /*val map = parseWanDouJiaGame(DownloadInfo.downloadWanDouJia(initPathGame))
+    println(map)*/
 
     //parseWanDouJiaSoftware(PageUtils.getHttpClientContent("http://www.wandoujia.com/category/app"))
     //parseWanDouJiaSoftware(PageUtils.getHttpClientContent("http://www.wandoujia.com/category/game"))
