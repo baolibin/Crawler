@@ -19,17 +19,26 @@ import scala.collection.mutable
   */
 object WanDouJia {
 
-  val softwareGame = false //true表示抓取软件内容,false表示抓取游戏内容
+  val softwareGame = true //true表示抓取软件内容,false表示抓取游戏内容
 
   //开始下载的初始地址
   val initPathSoftware = "http://www.wandoujia.com/category/app"
   val initPathGame = "http://www.wandoujia.com/category/game"
   val classificationMap = new mutable.HashMap[String, String]() //目录类别
-  val li = List("buYu", "dongMan", "duoBi", "feiXing", "geDou", "hengBan", "jieJi", "jingJiCeLue", "jingYing", "kaPai",
-    "kongZhan", "liShi", "maJiang", "moTuo", "paoKu", "qiangZhan", "qiTaQiuLei", "riHanXi", "rpg", "sanGuo",
-    "sheJi", "tanKe", "tiaoYue", "wuXia", "xiuGaiQi", "xiuXian", "yinYue", "youXiZhuShou", "yueDong", "zhiPai",
-    "zuJi",
-    "yangCheng","taFang","moNiQi","nanSheng","maoXian","lanQiu","qiLei")
+  val li =if(!softwareGame) {
+      List("buYu", "dongMan", "duoBi", "feiXing", "geDou", "hengBan", "jieJi", "jingJiCeLue", "jingYing", "kaPai",
+        "kongZhan", "liShi", "maJiang", "moTuo", "paoKu", "qiangZhan", "qiTaQiuLei", "riHanXi", "rpg", "sanGuo",
+        "sheJi", "tanKe", "tiaoYue", "wuXia", "xiuGaiQi", "xiuXian", "yinYue", "youXiZhuShou", "yueDong", "zhiPai",
+        "zuJi",
+        "yangCheng", "taFang", "moNiQi", "nanSheng", "maoXian", "lanQiu", "qiLei"
+      ,"ceLue","dongZuoSheJi","gongLue","jieMi","jingSu","jiShi","moHuan","moNi","saiChe","xiaoChu"
+        ,"yiZhi","zhanZheng","zhuoQiu","zhuoYou","zuQiu")
+    }else{
+      List("anQuan","caiPiao","changErGe","chaoGu","dianHuaTongXun","dianYingPiao","dianZiShu","diTuDaoHang","dongTaiBiZhi","fangChanJiaJu"
+        ,"jiangGuShi","jiaoYou","jieDai","kaoShi","lingSheng","luXingGongLue","qiChe","root","shiPin","siMi"
+        ,"touZi","wanYouXi","xiangCe","xiaoLvBanGong","yingYu","yinHang","yinYue","youHui","youXiang","yueJing"
+        ,"yuEr","yunPanCunChu","zhiBo","zhiFu","zhuoMian","zhuTi")
+    }
 
   def main(args: Array[String]) {
     initWanDouJiaCategory()
@@ -59,8 +68,8 @@ object WanDouJia {
         println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
         //拼接输出目录
         val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
-        val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia1/date=" + dateTime
-        //val outRootPath = "E://_github_2017/crawlerData/WanDouJia/date=" + dateTime
+        //val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia1/date=" + dateTime
+        val outRootPath = "E://_github_2017/crawlerData/WanDouJia2/date=" + dateTime
 
         if (softwareGame) {
           val file = new File(outRootPath + "/software/")
@@ -118,7 +127,7 @@ object WanDouJia {
               }
               println("===== 已爬完三级分类App里的" + nameLenel4 + ", url=" + url4 + " ========= 已爬完第:" + countJ + "个, ==== 一共" + urlMap.size + "个============================\n")
               //每解析一个App页面内容停顿2秒
-              Thread.sleep(2000)
+              Thread.sleep(1600)
             }
           } else {
             println("该三级页面的分页个数为空：" + url3)
