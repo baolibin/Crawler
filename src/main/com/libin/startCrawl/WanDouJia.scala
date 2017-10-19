@@ -37,7 +37,12 @@ object WanDouJia {
       List("anQuan","caiPiao","changErGe","chaoGu","dianHuaTongXun","dianYingPiao","dianZiShu","diTuDaoHang","dongTaiBiZhi","fangChanJiaJu"
         ,"jiangGuShi","jiaoYou","jieDai","kaoShi","lingSheng","luXingGongLue","qiChe","root","shiPin","siMi"
         ,"touZi","wanYouXi","xiangCe","xiaoLvBanGong","yingYu","yinHang","yinYue","youHui","youXiang","yueJing"
-        ,"yuEr","yunPanCunChu","zhiBo","zhiFu","zhuoMian","zhuTi")
+        ,"yuEr","yunPanCunChu","zhiBo","zhiFu","zhuoMian","zhuTi"
+      ,"baoXian","gaoGuai","huanYun","manHua","shangMenFuWu","tingShu","wifi","xiaoGongJu","xiaoShuo","xueXi"
+        ,"yiLiao"
+      ,"biJi","gaoXiao","qiuZhi","shengDian","tuanGOu","xiangJi","xinWenZiXun","yangSheng","yongCheZuChe","youHua"
+      ,"banGongRuanJian","beiDanCi","biJi","fanYi","gaoXiao","jiaKao","jianFeiJianShen","qiuZhi","quanQiuDaoGou","shengDian"
+        ,"tuanGOu","xiangJi","xinWenZiXun","yangSheng","yongCheZuChe","yongCheZuChe","youHua","ziTi")
     }
 
   def main(args: Array[String]) {
@@ -68,8 +73,8 @@ object WanDouJia {
         println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
         //拼接输出目录
         val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
-        //val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia1/date=" + dateTime
-        val outRootPath = "E://_github_2017/crawlerData/WanDouJia2/date=" + dateTime
+        val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia2/date=" + dateTime
+        //val outRootPath = "E://_github_2017/crawlerData/WanDouJia2/date=" + dateTime
 
         if (softwareGame) {
           val file = new File(outRootPath + "/software/")
