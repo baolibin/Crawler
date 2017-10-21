@@ -73,8 +73,8 @@ object WanDouJia {
         println("\n================ 开始下载三级分类App" + nameLenel3 + ", url=" + url3 + " ========= 正在爬第:" + count + "个, ==== 一共" + setLevel3.size + "个============================")
         //拼接输出目录
         val fileName = if (classificationMap.contains(nameLenel3)) classificationMap(nameLenel3) else "no"
-        val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia2/date=" + dateTime
-        //val outRootPath = "E://_github_2017/crawlerData/WanDouJia2/date=" + dateTime
+        //val outRootPath = "/home/baolibin/spider/crawler/crawlerData/WanDouJia2/date=" + dateTime
+        val outRootPath = "E://_github_2017/crawlerData/WanDouJia3/date=" + dateTime
 
         if (softwareGame) {
           val file = new File(outRootPath + "/software/")
@@ -310,5 +310,6 @@ object WanDouJia {
     classificationMap += ("安全" -> "anQuan")
     classificationMap += ("三国" -> "sanGuo")
     classificationMap += ("住宿" -> "zhuSu")
+    classificationMap += ("经期" -> "jingQi")
   }
 }
